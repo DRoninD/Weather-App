@@ -1,2 +1,1 @@
-# Weather-App
-Weather App with real-time API
+update the forecast.js using the class constructor
