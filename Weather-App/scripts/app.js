@@ -3,6 +3,7 @@ const card = document.querySelector(".card");
 const details = document.querySelector(".details");
 const time = document.querySelector("img.time");
 const icon = document.querySelector(".icon img");
+const forecast = new Forecast();
 
 const updateUI = data => {
     const { cityDetails, weatherDetails } = data;
@@ -31,16 +32,6 @@ const updateUI = data => {
     }
 };
 
-const updateCity = async city => {
-    const cityDetails = await getCity(city);
-    const weatherDetails = await getWeather(cityDetails.Key);
-
-    return {
-        cityDetails,
-        weatherDetails
-    };
-};
-
 cityForm.addEventListener("submit", e => {
     //prevent default action
     e.preventDefault();
@@ -50,7 +41,18 @@ cityForm.addEventListener("submit", e => {
     cityForm.reset();
 
     // update UI with the new city
-    updateCity(city)
+    forecast
+        .updateCity(city)
         .then(data => updateUI(data))
         .catch(err => console.log(err));
+
+    // set local storage
+    localStorage.setItem("location", city);
 });
+
+if (localStorage.getItem("location")) {
+    forecast
+        .updateCity(localStorage.getItem("location"))
+        .then(data => updateUI(data))
+        .catch(err => console.log(err));
+}
